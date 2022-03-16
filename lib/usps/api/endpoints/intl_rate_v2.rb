@@ -60,8 +60,7 @@ def intl_rate_v2(options = {})
 
 				def build_intl_rate_v2_request(xml, options = {})
 					tag_unless_blank(xml, 'Revision', options[:intl_rate_v2_request][:revision])
-					xml.tag!('Package') do
-						xml.tag!('ID', options[:intl_rate_v2_request][:package][:id])
+					xml.tag!('Package', :ID => 'IST') do							
 						xml.tag!('Pounds', options[:intl_rate_v2_request][:package][:pounds])
 						xml.tag!('Ounces', options[:intl_rate_v2_request][:package][:ounces])
 						tag_unless_blank(xml, 'Machinable', options[:intl_rate_v2_request][:package][:machinable])

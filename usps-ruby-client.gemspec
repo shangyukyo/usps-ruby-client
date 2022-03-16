@@ -12,12 +12,12 @@ Gem::Specification.new do |spec|
   spec.description   = 'An automatically generated USPS API Client based on the official USPS User Guides'
   spec.homepage      = 'https://www.usps.com/business/web-tools-apis/documentation-updates.htm'
   spec.license       = 'MIT'
-  spec.required_ruby_version = Gem::Requirement.new('>= 2.5.0')
+  # spec.required_ruby_version = Gem::Requirement.new('>= 2.5.0')
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/joeyparis/usps-ruby-client"
+  # spec.metadata["source_code_uri"] = "https://github.com/joeyparis/usps-ruby-client"
   # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
 
   # Specify which files should be added to the gem when it is released.
@@ -29,12 +29,11 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activesupport', '~> 6.1'
+  # spec.add_dependency 'activesupport', '~> 6.1'
   spec.add_dependency 'builder', '~> 3.2'
   spec.add_dependency 'faraday', '~> 0.17'
   spec.add_dependency 'faraday_middleware', '~> 0.14'
-  spec.add_dependency 'multi_xml', '~> 0.6'
-  spec.add_development_dependency 'amazing_print', '~> 1.2'
+  spec.add_dependency 'multi_xml', '~> 0.6'  
   spec.add_development_dependency 'erubis', '~> 2.7'
   spec.add_development_dependency 'nokogiri', '~> 1.10'
   spec.add_development_dependency 'pry', '~> 0.13'

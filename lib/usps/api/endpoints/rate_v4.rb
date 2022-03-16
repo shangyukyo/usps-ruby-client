@@ -47,6 +47,7 @@ def rate_v4(options = {})
 					throw ArgumentError.new('Required arguments :rate_v4_request missing') if options[:rate_v4_request].nil?
 
 					request = build_request(:rate_v4, options)
+					puts request.inspect
 					get('https://secure.shippingapis.com/ShippingAPI.dll', {
 						API: 'RateV4',
 						XML: request,
@@ -61,14 +62,14 @@ def rate_v4(options = {})
 
 				def build_rate_v4_request(xml, options = {})
 					tag_unless_blank(xml, 'Revision', options[:rate_v4_request][:revision])
-					xml.tag!('Package') do
+					xml.tag!('Package', :ID => 'IST') do						
 						xml.tag!('Service', options[:rate_v4_request][:package][:service])
 						tag_unless_blank(xml, 'FirstClassMailType', options[:rate_v4_request][:package][:first_class_mail_type])
 						xml.tag!('ZipOrigination', options[:rate_v4_request][:package][:zip_origination])
 						xml.tag!('ZipDestination', options[:rate_v4_request][:package][:zip_destination])
 						xml.tag!('Pounds', options[:rate_v4_request][:package][:pounds])
 						xml.tag!('Ounces', options[:rate_v4_request][:package][:ounces])
-						xml.tag!('Container', options[:rate_v4_request][:package][:container])
+						xml.tag!('Container', options[:rate_v4_request][:package][:container])						
 						tag_unless_blank(xml, 'Size', options[:rate_v4_request][:package][:size])
 						tag_unless_blank(xml, 'Width', options[:rate_v4_request][:package][:width])
 						tag_unless_blank(xml, 'Length', options[:rate_v4_request][:package][:length])
@@ -76,6 +77,7 @@ def rate_v4(options = {})
 						tag_unless_blank(xml, 'Girth', options[:rate_v4_request][:package][:girth])
 						tag_unless_blank(xml, 'Value', options[:rate_v4_request][:package][:value])
 						tag_unless_blank(xml, 'AmountToCollect', options[:rate_v4_request][:package][:amount_to_collect])
+						xml.tag!('Machinable', false)
 						xml.tag!('SpecialServices') do
 							tag_unless_blank(xml, 'SpecialService', options[:rate_v4_request][:package][:special_services][:special_service])
 							tag_unless_blank(xml, 'Content', options[:rate_v4_request][:package][:special_services][:content])
@@ -83,7 +85,7 @@ def rate_v4(options = {})
 							tag_unless_blank(xml, 'ContentDescription', options[:rate_v4_request][:package][:special_services][:content_description])
 							tag_unless_blank(xml, 'GroundOnly', options[:rate_v4_request][:package][:special_services][:ground_only])
 							tag_unless_blank(xml, 'SortBy', options[:rate_v4_request][:package][:special_services][:sort_by])
-							tag_unless_blank(xml, 'Machinable', options[:rate_v4_request][:package][:special_services][:machinable])
+							tag_unless_blank(xml, 'Machinable', options[:rate_v4_request][:package][:special_services][:machinable]) || 'False'
 							tag_unless_blank(xml, 'ReturnLocations', options[:rate_v4_request][:package][:special_services][:return_locations])
 							tag_unless_blank(xml, 'ReturnServiceInfo', options[:rate_v4_request][:package][:special_services][:return_service_info])
 							tag_unless_blank(xml, 'DropOffTime', options[:rate_v4_request][:package][:special_services][:drop_off_time])

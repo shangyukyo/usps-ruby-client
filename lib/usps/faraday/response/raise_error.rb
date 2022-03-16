@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'amazing_print'
+
 module Usps
   module Faraday
     module Response

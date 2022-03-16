@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'amazing_print'
 require 'nokogiri'
 require 'erubis'
 require 'active_support'
