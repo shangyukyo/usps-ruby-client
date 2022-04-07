@@ -61,13 +61,13 @@ def rate_v4(options = {})
 				end
 
 				def build_rate_v4_request(xml, options = {})
-					tag_unless_blank(xml, 'Revision', options[:rate_v4_request][:revision])
+					tag_unless_blank(xml, 'Revision', options[:rate_v4_request][:revision] || 2)
 					xml.tag!('Package', :ID => 'IST') do						
 						xml.tag!('Service', options[:rate_v4_request][:package][:service])
 						tag_unless_blank(xml, 'FirstClassMailType', options[:rate_v4_request][:package][:first_class_mail_type])
 						xml.tag!('ZipOrigination', options[:rate_v4_request][:package][:zip_origination])
 						xml.tag!('ZipDestination', options[:rate_v4_request][:package][:zip_destination])
-						xml.tag!('Pounds', options[:rate_v4_request][:package][:pounds])
+						xml.tag!('Pounds', options[:rate_v4_request][:package][:pounds] || 0)
 						xml.tag!('Ounces', options[:rate_v4_request][:package][:ounces])
 						xml.tag!('Container', options[:rate_v4_request][:package][:container])						
 						tag_unless_blank(xml, 'Size', options[:rate_v4_request][:package][:size])

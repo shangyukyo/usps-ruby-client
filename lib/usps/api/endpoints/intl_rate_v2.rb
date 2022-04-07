@@ -46,6 +46,7 @@ def intl_rate_v2(options = {})
 					throw ArgumentError.new('Required arguments :intl_rate_v2_request missing') if options[:intl_rate_v2_request].nil?
 
 					request = build_request(:intl_rate_v2, options)
+					puts request.inspect
 					get('https://secure.shippingapis.com/ShippingAPI.dll', {
 						API: 'IntlRateV2',
 						XML: request,
@@ -59,11 +60,11 @@ def intl_rate_v2(options = {})
 				end
 
 				def build_intl_rate_v2_request(xml, options = {})
-					tag_unless_blank(xml, 'Revision', options[:intl_rate_v2_request][:revision])
+					tag_unless_blank(xml, 'Revision', options[:intl_rate_v2_request][:revision] || 2)
 					xml.tag!('Package', :ID => 'IST') do							
-						xml.tag!('Pounds', options[:intl_rate_v2_request][:package][:pounds])
+						xml.tag!('Pounds', options[:intl_rate_v2_request][:package][:pounds] || 0)
 						xml.tag!('Ounces', options[:intl_rate_v2_request][:package][:ounces])
-						tag_unless_blank(xml, 'Machinable', options[:intl_rate_v2_request][:package][:machinable])
+						tag_unless_blank(xml, 'Machinable', options[:intl_rate_v2_request][:package][:machinable] || false)
 						xml.tag!('MailType', options[:intl_rate_v2_request][:package][:mail_type])
 						xml.tag!('GXG') do
 							xml.tag!('POBoxFlag', options[:intl_rate_v2_request][:package][:gxg][:po_box_flag])
@@ -75,7 +76,7 @@ def intl_rate_v2(options = {})
 						tag_unless_blank(xml, 'Container', options[:intl_rate_v2_request][:package][:container])
 						tag_unless_blank(xml, 'Size', options[:intl_rate_v2_request][:package][:size])
 						tag_unless_blank(xml, 'Width', options[:intl_rate_v2_request][:package][:width])
-						tag_unless_blank(xml, 'Length', options[:intl_rate_v2_request][:package[:length])
+						tag_unless_blank(xml, 'Length', options[:intl_rate_v2_request][:package][:length])
 						tag_unless_blank(xml, 'Height', options[:intl_rate_v2_request][:package][:height])
 						tag_unless_blank(xml, 'Girth', options[:intl_rate_v2_request][:package][:girth])
 						tag_unless_blank(xml, 'OriginZip', options[:intl_rate_v2_request][:package][:origin_zip])
