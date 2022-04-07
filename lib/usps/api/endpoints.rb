@@ -20,6 +20,7 @@ require_relative 'endpoints/track_v2'
 require_relative 'endpoints/usps_returns_label'
 require_relative 'endpoints/verify'
 require_relative 'endpoints/zip_code_lookup'
+require_relative 'endpoints/e_vs'
 
 module Usps
   module Api
@@ -43,6 +44,7 @@ module Usps
       include USPSReturnsLabel
       include Verify
       include ZipCodeLookup
+      include EVS
 
       ACTIONS = {
         carrier_pickup_schedule: 'CarrierPickupSchedule',
@@ -52,6 +54,7 @@ module Usps
         e_vs_priority_mail_intl: 'EVSPriorityMailIntl',
         e_vsgxg_get_label: 'EVSGXGGetLabel',
         e_vsi_cancel: 'EVSICancel',
+        e_vs: 'eVS',
         hfp_facility_info: 'HFPFacilityInfo',
         intl_rate_v2: 'IntlRateV2',
         pts_email: 'PTSEmail',

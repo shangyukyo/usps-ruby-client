@@ -116,7 +116,7 @@ module Usps
 				#        * *:sender_zip5* (String) — Sender ZIP code. For example: <SenderZip5>20212</SenderZip5> Required when <ePostageMailerReporting>=1
 				#        * *:sender_phone* (String) — Sender Phone #. 10 digits Required (including area code), with no punctuation. For example: <SenderPhone>2125551234</SenderPhone> Required when <ePostageMailerReporting>=1
 				#        * *:sender_email* (String) — E-mail Address of Sender. Valid e-mail addresses must be used. For example: <SenderEMail>cpapple@email.com</SenderEMail> Required when <ePostageMailerReporting>=1
-def e_vs_express_mail_intl(options = {})
+				def e_vs_express_mail_intl(options = {})
 					throw ArgumentError.new('Required arguments :e_vs_express_mail_intl_request missing') if options[:e_vs_express_mail_intl_request].nil?
 
 					request = build_request(:e_vs_express_mail_intl, options)
