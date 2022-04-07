@@ -77,7 +77,7 @@ def rate_v4(options = {})
 						tag_unless_blank(xml, 'Girth', options[:rate_v4_request][:package][:girth])
 						tag_unless_blank(xml, 'Value', options[:rate_v4_request][:package][:value])
 						tag_unless_blank(xml, 'AmountToCollect', options[:rate_v4_request][:package][:amount_to_collect])
-						xml.tag!('Machinable', false)
+						
 						xml.tag!('SpecialServices') do
 							tag_unless_blank(xml, 'SpecialService', options[:rate_v4_request][:package][:special_services][:special_service])
 							tag_unless_blank(xml, 'Content', options[:rate_v4_request][:package][:special_services][:content])
@@ -94,6 +94,8 @@ def rate_v4(options = {})
 							tag_unless_blank(xml, 'ReturnDimensionalWeight', options[:rate_v4_request][:package][:special_services][:return_dimensional_weight])
 							tag_unless_blank(xml, 'TrackingRetentionPeriod', options[:rate_v4_request][:package][:special_services][:tracking_retention_period])
 						end if options[:rate_v4_request][:package][:special_services].present?
+						
+						xml.tag!('Machinable', false)
 					end if options[:rate_v4_request][:package].present?
 					xml.target!
 				end

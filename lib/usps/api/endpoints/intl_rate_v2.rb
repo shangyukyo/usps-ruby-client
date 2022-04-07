@@ -68,27 +68,29 @@ def intl_rate_v2(options = {})
 						xml.tag!('GXG') do
 							xml.tag!('POBoxFlag', options[:intl_rate_v2_request][:package][:gxg][:po_box_flag])
 							xml.tag!('GiftFlag', options[:intl_rate_v2_request][:package][:gxg][:gift_flag])
-							xml.tag!('ValueOfContents', options[:intl_rate_v2_request][:package][:gxg][:value_of_contents])
-							xml.tag!('Country', options[:intl_rate_v2_request][:package][:gxg][:country])
-							tag_unless_blank(xml, 'Container', options[:intl_rate_v2_request][:package][:gxg][:container])
-							tag_unless_blank(xml, 'Size', options[:intl_rate_v2_request][:package][:gxg][:size])
-							tag_unless_blank(xml, 'Width', options[:intl_rate_v2_request][:package][:gxg][:width])
-							tag_unless_blank(xml, 'Length', options[:intl_rate_v2_request][:package][:gxg][:length])
-							tag_unless_blank(xml, 'Height', options[:intl_rate_v2_request][:package][:gxg][:height])
-							tag_unless_blank(xml, 'Girth', options[:intl_rate_v2_request][:package][:gxg][:girth])
-							tag_unless_blank(xml, 'OriginZip', options[:intl_rate_v2_request][:package][:gxg][:origin_zip])
-							tag_unless_blank(xml, 'CommercialFlag', options[:intl_rate_v2_request][:package][:gxg][:commercial_flag])
-							tag_unless_blank(xml, 'CommercialPlusFlag', options[:intl_rate_v2_request][:package][:gxg][:commercial_plus_flag])
-							xml.tag!('ExtraServices') do
-								tag_unless_blank(xml, 'ExtraService', options[:intl_rate_v2_request][:package][:gxg][:extra_services][:extra_service])
-								tag_unless_blank(xml, 'AcceptanceDateTime', options[:intl_rate_v2_request][:package][:gxg][:extra_services][:acceptance_date_time])
-								tag_unless_blank(xml, 'DestinationPostalCode', options[:intl_rate_v2_request][:package][:gxg][:extra_services][:destination_postal_code])
-								xml.tag!('Content') do
-									tag_unless_blank(xml, 'ContentType', options[:intl_rate_v2_request][:package][:gxg][:extra_services][:content][:content_type])
-									tag_unless_blank(xml, 'ContentDescription', options[:intl_rate_v2_request][:package][:gxg][:extra_services][:content][:content_description])
-								end if options[:intl_rate_v2_request][:package][:gxg][:extra_services][:content].present?
-							end if options[:intl_rate_v2_request][:package][:gxg][:extra_services].present?
 						end if options[:intl_rate_v2_request][:package][:gxg].present?
+
+						xml.tag!('ValueOfContents', options[:intl_rate_v2_request][:package][:value_of_contents])
+						xml.tag!('Country', options[:intl_rate_v2_request][:package][:country])
+						tag_unless_blank(xml, 'Container', options[:intl_rate_v2_request][:package][:container])
+						tag_unless_blank(xml, 'Size', options[:intl_rate_v2_request][:package][:size])
+						tag_unless_blank(xml, 'Width', options[:intl_rate_v2_request][:package][:width])
+						tag_unless_blank(xml, 'Length', options[:intl_rate_v2_request][:package[:length])
+						tag_unless_blank(xml, 'Height', options[:intl_rate_v2_request][:package][:height])
+						tag_unless_blank(xml, 'Girth', options[:intl_rate_v2_request][:package][:girth])
+						tag_unless_blank(xml, 'OriginZip', options[:intl_rate_v2_request][:package][:origin_zip])
+						tag_unless_blank(xml, 'CommercialFlag', options[:intl_rate_v2_request][:package][:commercial_flag] || 'Y')
+						tag_unless_blank(xml, 'CommercialPlusFlag', options[:intl_rate_v2_request][:package][:commercial_plus_flag] || 'N')
+						xml.tag!('ExtraServices') do
+							tag_unless_blank(xml, 'ExtraService', options[:intl_rate_v2_request][:package][:extra_services][:extra_service])
+							tag_unless_blank(xml, 'AcceptanceDateTime', options[:intl_rate_v2_request][:package][:extra_services][:acceptance_date_time])
+							tag_unless_blank(xml, 'DestinationPostalCode', options[:intl_rate_v2_request][:package][:extra_services][:destination_postal_code])
+							xml.tag!('Content') do
+								tag_unless_blank(xml, 'ContentType', options[:intl_rate_v2_request][:package][:extra_services][:content][:content_type])
+								tag_unless_blank(xml, 'ContentDescription', options[:intl_rate_v2_request][:package][:extra_services][:content][:content_description])
+							end if options[:intl_rate_v2_request][:package][:extra_services][:content].present?
+						end if options[:intl_rate_v2_request][:package][:extra_services].present?
+
 					end if options[:intl_rate_v2_request][:package].present?
 					xml.target!
 				end
