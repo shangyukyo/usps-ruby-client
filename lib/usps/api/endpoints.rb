@@ -21,6 +21,7 @@ require_relative 'endpoints/usps_returns_label'
 require_relative 'endpoints/verify'
 require_relative 'endpoints/zip_code_lookup'
 require_relative 'endpoints/e_vs'
+require_relative 'endpoints/e_vs_cancel'
 
 module Usps
   module Api
@@ -32,6 +33,7 @@ module Usps
       include EVSPriorityMailIntl
       include EVSGXGGetLabel
       include EVSICancel
+      include EVSCancel
       include HFPFacilityInfo
       include IntlRateV2
       include PTSEmail
@@ -53,7 +55,8 @@ module Usps
         e_vs_first_class_mail_intl: 'EVSFirstClassMailIntl',
         e_vs_priority_mail_intl: 'EVSPriorityMailIntl',
         e_vsgxg_get_label: 'EVSGXGGetLabel',
-        e_vsi_cancel: 'EVSICancel',
+        e_vsi_cancel: 'eVSICancel',
+        e_vs_cancel: 'eVSCancel',
         e_vs: 'eVS',
         hfp_facility_info: 'HFPFacilityInfo',
         intl_rate_v2: 'IntlRateV2',

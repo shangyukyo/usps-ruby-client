@@ -5,7 +5,7 @@
 module Usps
 	module Api
 		module Endpoints
-			module EVSICancel
+			module EVSCancel
 				# The eVS
 				# International Cancel request allows an eVS label to be removed from processing
 				# if the request is made prior to 11:59 PM Central Time on the day of label creation.This functionality is available only if the eVS International
@@ -18,13 +18,14 @@ module Usps
 				# @option options [required, Hash] e_vsi_cancel_request 
 				#  * *:barcode_number* (required, ) — BarcodeNumber of original label. Length of 22, 30 or 34 numbers.
 				#  * *:e_vsi_cancel_request* (required, ) — 
-def e_vsi_cancel(options = {})
-					throw ArgumentError.new('Required arguments :e_vsi_cancel_request missing') if options[:e_vsi_cancel_request].nil?
-					throw ArgumentError.new('Required arguments :e_vsi_cancel_request, :barcode_number missing') if options[:e_vsi_cancel_request][:barcode_number].nil?					
+	def e_vs_cancel(options = {})
+					throw ArgumentError.new('Required arguments :e_vs_cancel_request missing') if options[:e_vs_cancel_request].nil?
+					throw ArgumentError.new('Required arguments :e_vs_cancel_request, :barcode_number missing') if options[:e_vs_cancel_request][:barcode_number].nil?
 
-					request = build_request(:e_vsi_cancel, options)
+					request = build_request(:e_vs_cancel, options)
+					puts request
 					get('https://secure.shippingapis.com/ShippingAPI.dll', {
-						API: 'eVSICancel',
+						API: 'eVSCancel',
 						XML: request,
 					})
 				end
@@ -35,8 +36,8 @@ def e_vsi_cancel(options = {})
 					xml.tag!(tag_name, data) unless data.blank? || data.nil?
 				end
 
-				def build_e_vsi_cancel_request(xml, options = {})
-					xml.tag!('BarcodeNumber', options[:e_vsi_cancel_request][:barcode_number])					
+				def build_e_vs_cancel_request(xml, options = {})
+					xml.tag!('BarcodeNumber', options[:e_vs_cancel_request][:barcode_number])					
 					xml.target!
 				end
 

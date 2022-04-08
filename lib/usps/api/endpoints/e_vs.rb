@@ -12,8 +12,6 @@ module Usps
 
 					request = build_request(:e_vs, options)
 
-					puts request.inspect
-					puts "****"
 					get('https://secure.shippingapis.com/ShippingAPI.dll', {
 						API: 'eVS',
 						XML: request,
