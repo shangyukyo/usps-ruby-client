@@ -23,6 +23,7 @@ require_relative 'usps/api/xml'
 require_relative 'usps/api/endpoints'
 # require_relative 'usps/pagination/cursor'
 require_relative 'usps/client'
+require_relative 'usps/label'
 
 # module Usps
 #   class Error < StandardError; end

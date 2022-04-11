@@ -12,10 +12,15 @@ module Usps
 
 					request = build_request(:e_vs, options)
 
-					get('https://secure.shippingapis.com/ShippingAPI.dll', {
+					response = get('https://secure.shippingapis.com/ShippingAPI.dll', {
 						API: 'eVS',
 						XML: request,
 					})
+
+					raise response['eVSResponse']['Error'] if response['eVSResponse']['Error'].present?
+
+					save_image(options[:path], Array(response['eVSResponse']['LabelImage']), response['eVSResponse']['BarcodeNumber'])
+					response
 				end
 
 				private
