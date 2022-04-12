@@ -104,15 +104,21 @@ module Usps
 				#          * *:sender_email* (String) — E-mail Address of Sender. Valid e-mail addresses must be used. For example: <SenderEMail>cpapple@email.com</ SenderEMail> Required when <ePostageMailerReporting>=1
 				#          * *:remaining_barcodes* (required, String) — This contains the number of remaining barcodes that can be generated for this particular request.
 				#          * *:chargeback_code* (String) — Used in Shipping Services File v2.0 for G-10 labels. Contact your Technical Integration Specialist for details.
-def e_vs_first_class_mail_intl(options = {})
-					throw ArgumentError.new('Required arguments :e_vs_first_class_mail_intl_request missing') if options[:e_vs_first_class_mail_intl_request].nil?
-					throw ArgumentError.new('Required arguments :e_vs_first_class_mail_intl_request, :revision missing') if options[:e_vs_first_class_mail_intl_request][:revision].nil?
+
+				def e_vs_first_class_mail_intl(options = {})
+					throw ArgumentError.new('Required arguments :e_vs_first_class_mail_intl_request missing') if options[:e_vs_first_class_mail_intl_request].nil?					
 
 					request = build_request(:e_vs_first_class_mail_intl, options)
-					get('https://secure.shippingapis.com/ShippingAPI.dll', {
+					response = get('https://secure.shippingapis.com/ShippingAPI.dll', {
 						API: 'eVSFirstClassMailIntl',
 						XML: request,
 					})
+
+					raise response['eVSFirstClassMailIntlResponse']['Error'] if response['eVSFirstClassMailIntlResponse']['Error'].present?
+
+					images = Array(response['eVSFirstClassMailIntlResponse']['LabelImage'], response['eVSFirstClassMailIntlResponse']['Page2Image'], response['eVSFirstClassMailIntlResponse']['Page3Image'])
+					save_image(options[:path], , response['eVSFirstClassMailIntlResponse']['BarcodeNumber'])
+					response						
 				end
 
 				private
@@ -124,100 +130,114 @@ def e_vs_first_class_mail_intl(options = {})
 				def build_e_vs_first_class_mail_intl_request(xml, options = {})
 					tag_unless_blank(xml, 'PASSWORD', options[:e_vs_first_class_mail_intl_request][:password])
 					tag_unless_blank(xml, 'Option', options[:e_vs_first_class_mail_intl_request][:option])
-					xml.tag!('Revision', options[:e_vs_first_class_mail_intl_request][:revision])
+					xml.tag!('Revision', options[:e_vs_first_class_mail_intl_request][:revision] || '2')
+
 					xml.tag!('ImageParameters') do
-						tag_unless_blank(xml, 'ImageParameter', options[:e_vs_first_class_mail_intl_request][:image_parameters][:image_parameter])
-						xml.tag!('FromFirstName', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_first_name])
-						tag_unless_blank(xml, 'FromMiddleInitial', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_middle_initial])
-						xml.tag!('FromLastName', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_last_name])
-						xml.tag!('FromFirm', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_firm])
-						tag_unless_blank(xml, 'FromAddress1', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_address1])
-						xml.tag!('FromAddress2', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_address2])
-						tag_unless_blank(xml, 'FromUrbanization', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_urbanization])
-						xml.tag!('FromCity', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_city])
-						xml.tag!('FromState', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_state])
-						xml.tag!('FromZip5', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_zip5])
-						tag_unless_blank(xml, 'FromZip4', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_zip4])
-						xml.tag!('FromPhone', options[:e_vs_first_class_mail_intl_request][:image_parameters][:from_phone])
-						tag_unless_blank(xml, 'ToName', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_name])
-						xml.tag!('ToFirstName', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_first_name])
-						xml.tag!('ToLastName', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_last_name])
-						xml.tag!('ToFirm', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_firm])
-						tag_unless_blank(xml, 'ToAddress1', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_address1])
-						xml.tag!('ToAddress2', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_address2])
-						tag_unless_blank(xml, 'ToAddress3', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_address3])
-						xml.tag!('ToCity', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_city])
-						tag_unless_blank(xml, 'ToProvince', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_province])
-						xml.tag!('ToCountry', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_country])
-						xml.tag!('ToPostalCode', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_postal_code])
-						xml.tag!('ToPOBoxFlag', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_po_box_flag])
-						tag_unless_blank(xml, 'ToPhone', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_phone])
-						tag_unless_blank(xml, 'ToFax', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_fax])
-						tag_unless_blank(xml, 'ToEmail', options[:e_vs_first_class_mail_intl_request][:image_parameters][:to_email])
-						tag_unless_blank(xml, 'FirstClassMailType', options[:e_vs_first_class_mail_intl_request][:image_parameters][:first_class_mail_type])
-						xml.tag!('ShippingContents') do
-							xml.tag!('ItemDetail') do
-								xml.tag!('Description', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:description])
-								xml.tag!('Quantity', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:quantity])
-								xml.tag!('Value', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:value])
-								xml.tag!('NetPounds', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:net_pounds])
-								xml.tag!('NetOunces', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:net_ounces])
-								xml.tag!('HSTariffNumber', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:hs_tariff_number])
-								xml.tag!('CountryOfOrigin', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:country_of_origin])
-								tag_unless_blank(xml, 'Postage', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:postage])
-								xml.tag!('GrossPounds', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:gross_pounds])
-								xml.tag!('GrossOunces', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:gross_ounces])
-								tag_unless_blank(xml, 'Machinable', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:machinable])
-								xml.tag!('ContentType', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:content_type])
-								tag_unless_blank(xml, 'ContentTypeOther', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:content_type_other])
-								xml.tag!('Agreement', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:agreement])
-								tag_unless_blank(xml, 'Comments', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:comments])
-								tag_unless_blank(xml, 'LicenseNumber', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:license_number])
-								tag_unless_blank(xml, 'CertificateNumber', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:certificate_number])
-								tag_unless_blank(xml, 'InvoiceNumber', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:invoice_number])
-								xml.tag!('ImageType', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:image_type])
-								tag_unless_blank(xml, 'ImageLayout', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:image_layout])
-								tag_unless_blank(xml, 'CustomerRefNo', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:customer_ref_no])
-								tag_unless_blank(xml, 'CustomerRefNo2', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:customer_ref_no2])
-								tag_unless_blank(xml, 'POZipCode', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:po_zip_code])
-								tag_unless_blank(xml, 'LabelDate', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:label_date])
-								tag_unless_blank(xml, 'HoldForManifest', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:hold_for_manifest])
-								tag_unless_blank(xml, 'EELPFC', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:eelpfc])
-								tag_unless_blank(xml, 'Container', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:container])
-								tag_unless_blank(xml, 'Length', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:length])
-								tag_unless_blank(xml, 'Width', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:width])
-								tag_unless_blank(xml, 'Height', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:height])
-								tag_unless_blank(xml, 'Girth', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:girth])
-								xml.tag!('ExtraServices') do
-									tag_unless_blank(xml, 'ExtraService', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:extra_service])
-									tag_unless_blank(xml, 'PriceOptions', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:price_options])
-									tag_unless_blank(xml, 'ActionCode', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:action_code])
-									tag_unless_blank(xml, 'OptOutOfSPE', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:opt_out_of_spe])
-									tag_unless_blank(xml, 'PermitNumber', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:permit_number])
-									tag_unless_blank(xml, 'AccountZipCode', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:account_zip_code])
-									tag_unless_blank(xml, 'Machinable', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:machinable])
-									xml.tag!('DestinationRateIndicator', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:destination_rate_indicator])
-									tag_unless_blank(xml, 'MID', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:mid])
-									tag_unless_blank(xml, 'LogisticsManagerMID', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:logistics_manager_mid])
-									tag_unless_blank(xml, 'CRID', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:crid])
-									tag_unless_blank(xml, 'VendorCode', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:vendor_code])
-									tag_unless_blank(xml, 'VendorProductVersionNumber', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:vendor_product_version_number])
-									tag_unless_blank(xml, 'ePostageMailerReporting', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:e_postage_mailer_reporting])
-									tag_unless_blank(xml, 'SenderFirstName', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:sender_first_name])
-									tag_unless_blank(xml, 'SenderLastName', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:sender_last_name])
-									tag_unless_blank(xml, 'SenderBusinessName', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:sender_business_name])
-									tag_unless_blank(xml, 'SenderAddress1', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:sender_address1])
-									tag_unless_blank(xml, 'SenderCity', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:sender_city])
-									tag_unless_blank(xml, 'SenderState', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:sender_state])
-									tag_unless_blank(xml, 'SenderZip5', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:sender_zip5])
-									tag_unless_blank(xml, 'SenderPhone', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:sender_phone])
-									tag_unless_blank(xml, 'SenderEmail', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:sender_email])
-									xml.tag!('RemainingBarcodes', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:remaining_barcodes])
-									tag_unless_blank(xml, 'ChargebackCode', options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services][:chargeback_code])
-								end if options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail][:extra_services].present?
-							end if options[:e_vs_first_class_mail_intl_request][:image_parameters][:shipping_contents][:item_detail].present?
-						end 
+						tag_unless_blank(xml, 'ImageParameter', options[:e_vs_first_class_mail_intl_request][:image_parameters][:image_parameter] || '4X6LABEL')
 					end if options[:e_vs_first_class_mail_intl_request][:image_parameters].present?
+
+					xml.tag!('FromFirstName', options[:e_vs_first_class_mail_intl_request][:from_first_name])
+					tag_unless_blank(xml, 'FromMiddleInitial', options[:e_vs_first_class_mail_intl_request][:from_middle_initial])
+					xml.tag!('FromLastName', options[:e_vs_first_class_mail_intl_request][:from_last_name])
+					xml.tag!('FromFirm', options[:e_vs_first_class_mail_intl_request][:from_firm])
+					tag_unless_blank(xml, 'FromAddress1', options[:e_vs_first_class_mail_intl_request][:from_address1])
+					xml.tag!('FromAddress2', options[:e_vs_first_class_mail_intl_request][:from_address2])
+					tag_unless_blank(xml, 'FromUrbanization', options[:e_vs_first_class_mail_intl_request][:from_urbanization])
+					xml.tag!('FromCity', options[:e_vs_first_class_mail_intl_request][:from_city])
+					xml.tag!('FromState', options[:e_vs_first_class_mail_intl_request][:from_state])
+					xml.tag!('FromZip5', options[:e_vs_first_class_mail_intl_request][:from_zip5])
+					tag_unless_blank(xml, 'FromZip4', options[:e_vs_first_class_mail_intl_request][:from_zip4])
+					xml.tag!('FromPhone', options[:e_vs_first_class_mail_intl_request][:from_phone])
+					tag_unless_blank(xml, 'ToName', options[:e_vs_first_class_mail_intl_request][:to_name])
+					xml.tag!('ToFirstName', options[:e_vs_first_class_mail_intl_request][:to_first_name])
+					xml.tag!('ToLastName', options[:e_vs_first_class_mail_intl_request][:to_last_name])
+					xml.tag!('ToFirm', options[:e_vs_first_class_mail_intl_request][:to_firm])
+					tag_unless_blank(xml, 'ToAddress1', options[:e_vs_first_class_mail_intl_request][:to_address1])
+					xml.tag!('ToAddress2', options[:e_vs_first_class_mail_intl_request][:to_address2])
+					tag_unless_blank(xml, 'ToAddress3', options[:e_vs_first_class_mail_intl_request][:to_address3])
+					xml.tag!('ToCity', options[:e_vs_first_class_mail_intl_request][:to_city])
+					tag_unless_blank(xml, 'ToProvince', options[:e_vs_first_class_mail_intl_request][:to_province])
+					xml.tag!('ToCountry', options[:e_vs_first_class_mail_intl_request][:to_country])
+					xml.tag!('ToPostalCode', options[:e_vs_first_class_mail_intl_request][:to_postal_code])
+					xml.tag!('ToPOBoxFlag', options[:e_vs_first_class_mail_intl_request][:to_po_box_flag])
+					tag_unless_blank(xml, 'ToPhone', options[:e_vs_first_class_mail_intl_request][:to_phone])
+					tag_unless_blank(xml, 'ToFax', options[:e_vs_first_class_mail_intl_request][:to_fax])
+					tag_unless_blank(xml, 'ToEmail', options[:e_vs_first_class_mail_intl_request][:to_email])
+					tag_unless_blank(xml, 'FirstClassMailType', options[:e_vs_first_class_mail_intl_request][:first_class_mail_type])
+
+					xml.tag!('ShippingContents') do
+						if options[:e_vs_first_class_mail_intl_request][:item_details].present?
+							options[:e_vs_first_class_mail_intl_request][:item_details].each do |item_detail|
+								xml.tag!('ItemDetail') do
+									xml.tag!('Description', item_detail[:description])
+									xml.tag!('Quantity', item_detail[:quantity])
+									xml.tag!('Value', item_detail[:value])
+									xml.tag!('NetPounds', item_detail[:net_pounds])
+									xml.tag!('NetOunces', item_detail[:net_ounces])
+									xml.tag!('HSTariffNumber', item_detail[:hs_tariff_number])
+									xml.tag!('CountryOfOrigin', item_detail[:country_of_origin])
+								end
+							end
+						end
+					end
+
+					tag_unless_blank(xml, 'Postage', options[:e_vs_first_class_mail_intl_request][:postage])
+					xml.tag!('GrossPounds', options[:e_vs_first_class_mail_intl_request][:gross_pounds])
+					xml.tag!('GrossOunces', options[:e_vs_first_class_mail_intl_request][:gross_ounces])
+					tag_unless_blank(xml, 'Machinable', options[:e_vs_first_class_mail_intl_request][:machinable])
+					xml.tag!('ContentType', options[:e_vs_first_class_mail_intl_request][:content_type])
+					tag_unless_blank(xml, 'ContentTypeOther', options[:e_vs_first_class_mail_intl_request][:content_type_other])
+					xml.tag!('Agreement', options[:e_vs_first_class_mail_intl_request][:agreement] || 'Y')
+					tag_unless_blank(xml, 'Comments', options[:e_vs_first_class_mail_intl_request][:comments])
+					tag_unless_blank(xml, 'LicenseNumber', options[:e_vs_first_class_mail_intl_request][:license_number])
+					tag_unless_blank(xml, 'CertificateNumber', options[:e_vs_first_class_mail_intl_request][:certificate_number])
+					tag_unless_blank(xml, 'InvoiceNumber', options[:e_vs_first_class_mail_intl_request][:invoice_number])
+					xml.tag!('ImageType', options[:e_vs_first_class_mail_intl_request][:image_type])
+					tag_unless_blank(xml, 'ImageLayout', options[:e_vs_first_class_mail_intl_request][:image_layout])
+					tag_unless_blank(xml, 'CustomerRefNo', options[:e_vs_first_class_mail_intl_request][:customer_ref_no])
+					tag_unless_blank(xml, 'CustomerRefNo2', options[:e_vs_first_class_mail_intl_request][:customer_ref_no2])
+					tag_unless_blank(xml, 'POZipCode', options[:e_vs_first_class_mail_intl_request][:po_zip_code])
+					tag_unless_blank(xml, 'LabelDate', options[:e_vs_first_class_mail_intl_request][:label_date])
+					tag_unless_blank(xml, 'HoldForManifest', options[:e_vs_first_class_mail_intl_request][:hold_for_manifest])
+					tag_unless_blank(xml, 'EELPFC', options[:e_vs_first_class_mail_intl_request][:eelpfc])
+					tag_unless_blank(xml, 'Container', options[:e_vs_first_class_mail_intl_request][:container])
+					tag_unless_blank(xml, 'Length', options[:e_vs_first_class_mail_intl_request][:length])
+					tag_unless_blank(xml, 'Width', options[:e_vs_first_class_mail_intl_request][:width])
+					tag_unless_blank(xml, 'Height', options[:e_vs_first_class_mail_intl_request][:height])
+					tag_unless_blank(xml, 'Girth', options[:e_vs_first_class_mail_intl_request][:girth])
+
+					xml.tag!('ExtraServices') do
+						tag_unless_blank(xml, 'ExtraService', options[:e_vs_first_class_mail_intl_request][:extra_services][:extra_service])
+					end if options[:e_vs_first_class_mail_intl_request][:extra_services].present?
+
+					tag_unless_blank(xml, 'PriceOptions', options[:e_vs_first_class_mail_intl_request][:price_options])
+					tag_unless_blank(xml, 'ActionCode', options[:e_vs_first_class_mail_intl_request][:action_code])
+					tag_unless_blank(xml, 'OptOutOfSPE', options[:e_vs_first_class_mail_intl_request][:opt_out_of_spe])
+					tag_unless_blank(xml, 'PermitNumber', options[:e_vs_first_class_mail_intl_request][:permit_number])
+					tag_unless_blank(xml, 'AccountZipCode', options[:e_vs_first_class_mail_intl_request][:account_zip_code])
+					tag_unless_blank(xml, 'Machinable', options[:e_vs_first_class_mail_intl_request][:machinable])
+					xml.tag!('DestinationRateIndicator', options[:e_vs_first_class_mail_intl_request][:destination_rate_indicator])
+					tag_unless_blank(xml, 'MID', options[:e_vs_first_class_mail_intl_request][:mid])
+					tag_unless_blank(xml, 'LogisticsManagerMID', options[:e_vs_first_class_mail_intl_request][:logistics_manager_mid])
+					tag_unless_blank(xml, 'CRID', options[:e_vs_first_class_mail_intl_request][:crid])
+					tag_unless_blank(xml, 'VendorCode', options[:e_vs_first_class_mail_intl_request][:vendor_code])
+					tag_unless_blank(xml, 'VendorProductVersionNumber', options[:e_vs_first_class_mail_intl_request][:vendor_product_version_number])
+					tag_unless_blank(xml, 'ePostageMailerReporting', options[:e_vs_first_class_mail_intl_request][:image_parameters][:e_postage_mailer_reporting])
+					tag_unless_blank(xml, 'SenderFirstName', options[:e_vs_first_class_mail_intl_request][:sender_first_name])
+					tag_unless_blank(xml, 'SenderLastName', options[:e_vs_first_class_mail_intl_request][:sender_last_name])
+					tag_unless_blank(xml, 'SenderBusinessName', options[:e_vs_first_class_mail_intl_request][:sender_business_name])
+					tag_unless_blank(xml, 'SenderAddress1', options[:e_vs_first_class_mail_intl_request][:sender_address1])
+					tag_unless_blank(xml, 'SenderCity', options[:e_vs_first_class_mail_intl_request][:sender_city])
+					tag_unless_blank(xml, 'SenderState', options[:e_vs_first_class_mail_intl_request][:sender_state])
+					tag_unless_blank(xml, 'SenderZip5', options[:e_vs_first_class_mail_intl_request][:sender_zip5])
+					tag_unless_blank(xml, 'SenderPhone', options[:e_vs_first_class_mail_intl_request][:sender_phone])
+					tag_unless_blank(xml, 'SenderEmail', options[:e_vs_first_class_mail_intl_request][:sender_email])
+					xml.tag!('RemainingBarcodes', options[:e_vs_first_class_mail_intl_request][:image_parameters][:remaining_barcodes])
+					tag_unless_blank(xml, 'ChargebackCode', options[:e_vs_first_class_mail_intl_request][:chargeback_code])
+							
+						
+					
+					
 					xml.target!
 				end
 

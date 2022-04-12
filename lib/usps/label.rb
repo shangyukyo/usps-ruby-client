@@ -15,6 +15,7 @@ module Usps
       files = []
 
       @images.each_with_index do |img, i|
+        next if img.blank?
         full_path = "#{path}_#{name(tracking_number, i)}"
         img = Base64.decode64(img)
         File.open(full_path, 'wb') do|f|
