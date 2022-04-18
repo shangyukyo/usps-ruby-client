@@ -117,7 +117,7 @@ module Usps
 					raise response['eVSFirstClassMailIntlResponse']['Error'] if response['eVSFirstClassMailIntlResponse']['Error'].present?
 
 					images = Array(response['eVSFirstClassMailIntlResponse']['LabelImage'], response['eVSFirstClassMailIntlResponse']['Page2Image'], response['eVSFirstClassMailIntlResponse']['Page3Image'])
-					save_image(options[:path], , response['eVSFirstClassMailIntlResponse']['BarcodeNumber'])
+					save_image(options[:path], images, response['eVSFirstClassMailIntlResponse']['BarcodeNumber'])
 					response						
 				end
 

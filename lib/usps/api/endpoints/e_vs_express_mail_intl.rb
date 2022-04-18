@@ -129,7 +129,7 @@ module Usps
 					raise response['eVSExpressMailIntlResponse']['Error'] if response['eVSExpressMailIntlResponse']['Error'].present?
 
 					images = Array(response['eVSExpressMailIntlResponse']['LabelImage'], response['eVSExpressMailIntlResponse']['Page2Image'], response['eVSExpressMailIntlResponse']['Page3Image'], response['eVSExpressMailIntlResponse']['Page4Image'], response['eVSExpressMailIntlResponse']['Page5Image'], response['eVSExpressMailIntlResponse']['Page6Image'])
-					save_image(options[:path], , response['eVSExpressMailIntlResponse']['BarcodeNumber'])
+					save_image(options[:path], images, response['eVSExpressMailIntlResponse']['BarcodeNumber'])
 					response					
 				end
 
@@ -222,7 +222,7 @@ module Usps
 					tag_unless_blank(xml, 'LabelDate', options[:e_vs_express_mail_intl_request][:label_date])
 					tag_unless_blank(xml, 'EMCAAccount', options[:e_vs_express_mail_intl_request][:emca_account])
 					tag_unless_blank(xml, 'HoldForManifest', options[:e_vs_express_mail_intl_request][:hold_for_manifest])
-					tag_unless_blank(xml, 'EELPFC', options[:e_vs_express_mail_intl_request]:eelpfc])
+					tag_unless_blank(xml, 'EELPFC', options[:e_vs_express_mail_intl_request][:eelpfc])
 					tag_unless_blank(xml, 'PriceOptions', options[:e_vs_express_mail_intl_request][:price_options])
 					tag_unless_blank(xml, 'Length', options[:e_vs_express_mail_intl_request][:length])
 					tag_unless_blank(xml, 'Width', options[:e_vs_express_mail_intl_request][:width])
@@ -236,7 +236,7 @@ module Usps
 					tag_unless_blank(xml, 'PermitNumber', options[:e_vs_express_mail_intl_request][:permit_number])
 					tag_unless_blank(xml, 'AccountZipCode', options[:e_vs_express_mail_intl_request][:account_zip_code])
 					tag_unless_blank(xml, 'ImportersReferenceType', options[:e_vs_express_mail_intl_request][:importers_reference_type])
-					tag_unless_blank(xml, 'ImportersTelephoneNumber', options[:e_vs_express_mail_intl_request]:importers_telephone_number])
+					tag_unless_blank(xml, 'ImportersTelephoneNumber', options[:e_vs_express_mail_intl_request][:importers_telephone_number])
 					tag_unless_blank(xml, 'ImportersFaxNumber', options[:e_vs_express_mail_intl_request][:importers_fax_number])
 					tag_unless_blank(xml, 'ImportersEmail', options[:e_vs_express_mail_intl_request][:importers_email])
 					tag_unless_blank(xml, 'Machinable', options[:e_vs_express_mail_intl_request][:machinable])

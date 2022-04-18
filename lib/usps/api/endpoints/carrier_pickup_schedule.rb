@@ -31,23 +31,20 @@ module Usps
 				#    * *:package_location* (required, String) — Enter one of the following values: Note: "Other" requires information in the value for the <SpecialInstructions> tag. For example: <PackageLocation>Front Door</PackageLocation>
 				#    * *:special_instructions* (String) — Value Required when PackageLocation is “Other”. Only alpha, numeric, commas, periods, apostrophes, _, &, -, ( ), ?, #, / +, @ and space characters may be used. For example: <SpecialInstructions>Packages are behind the screen door.</SpecialInstructions>
 				#    * *:email_address* (String) — If provided, email notifications will be sent confirming package pickup, or request changes and cancellations. Maximum characters allowed: 50. For example: <EmailAddress>cpapple@email.com</EmailAddress>
-def carrier_pickup_schedule(options = {})
+				def carrier_pickup_schedule(options = {})
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request missing') if options[:carrier_pickup_schedule_request].nil?
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :first_name missing') if options[:carrier_pickup_schedule_request][:first_name].nil?
-					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :last_name missing') if options[:carrier_pickup_schedule_request][:last_name].nil?
-					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :suite_or_apt missing') if options[:carrier_pickup_schedule_request][:suite_or_apt].nil?
+					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :last_name missing') if options[:carrier_pickup_schedule_request][:last_name].nil?					
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :address2 missing') if options[:carrier_pickup_schedule_request][:address2].nil?
-					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :urbanization missing') if options[:carrier_pickup_schedule_request][:urbanization].nil?
+			
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :city missing') if options[:carrier_pickup_schedule_request][:city].nil?
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :state missing') if options[:carrier_pickup_schedule_request][:state].nil?
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :zip5 missing') if options[:carrier_pickup_schedule_request][:zip5].nil?
-					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :zip4 missing') if options[:carrier_pickup_schedule_request][:zip4].nil?
+			
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :phone missing') if options[:carrier_pickup_schedule_request][:phone].nil?
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :package missing') if options[:carrier_pickup_schedule_request][:package].nil?
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :package, :service_type missing') if options[:carrier_pickup_schedule_request][:package][:service_type].nil?
 					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :package, :count missing') if options[:carrier_pickup_schedule_request][:package][:count].nil?
-					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :package, :estimated_weight missing') if options[:carrier_pickup_schedule_request][:package][:estimated_weight].nil?
-					throw ArgumentError.new('Required arguments :carrier_pickup_schedule_request, :package, :package_location missing') if options[:carrier_pickup_schedule_request][:package][:package_location].nil?
 
 					request = build_request(:carrier_pickup_schedule, options)
 					get('https://secure.shippingapis.com/ShippingAPI.dll', {
@@ -75,14 +72,22 @@ def carrier_pickup_schedule(options = {})
 					xml.tag!('ZIP4', options[:carrier_pickup_schedule_request][:zip4])
 					xml.tag!('Phone', options[:carrier_pickup_schedule_request][:phone])
 					tag_unless_blank(xml, 'Extension', options[:carrier_pickup_schedule_request][:extension])
-					xml.tag!('Package') do
-						xml.tag!('ServiceType', options[:carrier_pickup_schedule_request][:package][:service_type])
-						xml.tag!('Count', options[:carrier_pickup_schedule_request][:package][:count])
-						xml.tag!('EstimatedWeight', options[:carrier_pickup_schedule_request][:package][:estimated_weight])
-						xml.tag!('PackageLocation', options[:carrier_pickup_schedule_request][:package][:package_location])
-						tag_unless_blank(xml, 'SpecialInstructions', options[:carrier_pickup_schedule_request][:package][:special_instructions])
-						tag_unless_blank(xml, 'EmailAddress', options[:carrier_pickup_schedule_request][:package][:email_address])
-					end 
+					
+
+					if options[:carrier_pickup_schedule_request][:packages]					
+						options[:carrier_pickup_schedule_request][:packages].each do |pkg|
+							xml.tag!('Package') do
+								xml.tag!('ServiceType', pkg[:service_type])
+								xml.tag!('Count', pkg[:count])
+							end
+						end
+					end
+
+					xml.tag!('EstimatedWeight', options[:carrier_pickup_schedule_request][:estimated_weight])
+					xml.tag!('PackageLocation', options[:carrier_pickup_schedule_request][:package_location])
+					tag_unless_blank(xml, 'SpecialInstructions', options[:carrier_pickup_schedule_request][:special_instructions])
+					tag_unless_blank(xml, 'EmailAddress', options[:carrier_pickup_schedule_request][:email_address])
+				
 					xml.target!
 				end
 
