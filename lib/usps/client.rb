@@ -17,9 +17,15 @@ module Usps
     end
 
     def build_request(action, options)
+      request_name = if options[:debug]
+        "#{Usps::Api::Endpoints::ACTIONS[action]}CertifyRequest"
+      else
+        "#{Usps::Api::Endpoints::ACTIONS[action]}Request"
+      end rescue "#{Usps::Api::Endpoints::ACTIONS[action]}Request"
+
       xml = Builder::XmlMarkup.new(indent: 2)
       # xml.instruct!(:xml, version: '1.0', encoding: 'utf-8')
-      xml.tag!("#{Usps::Api::Endpoints::ACTIONS[action]}Request", USERID: user_id) do
+      xml.tag!(request_name, USERID: user_id) do
         send("build_#{action}_request", xml, options)
       end
     end

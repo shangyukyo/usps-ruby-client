@@ -12,10 +12,23 @@ module Usps
 
 					request = build_request(:e_vs, options)
 
+					puts request.inspect
+					puts "****"
+
+					api = if options[:debug]
+						'eVSCertify'
+					else
+						'eVS'
+					end
+
+					puts "api #{api}"
 					response = get('https://secure.shippingapis.com/ShippingAPI.dll', {
-						API: 'eVS',
+						API: api,
 						XML: request,
 					})
+
+					puts "** response"
+					puts response.inspect
 
 					raise response['eVSResponse']['Error'] if response['eVSResponse']['Error'].present?
 
@@ -44,6 +57,7 @@ module Usps
 					xml.tag!('FromCity', options[:e_vs_request][:from_city])
 					xml.tag!('FromState', options[:e_vs_request][:from_state])
 					xml.tag!('FromZip5', options[:e_vs_request][:from_zip_5])
+					xml.tag!('FromZip4', options[:e_vs_request][:from_zip_4])
 					xml.tag!('FromPhone', options[:e_vs_request][:from_phone])					
 					xml.tag!('ToName', options[:e_vs_request][:to_name])
 					xml.tag!('ToFirm', options[:e_vs_request][:to_name])
@@ -52,6 +66,7 @@ module Usps
 					xml.tag!('ToCity', options[:e_vs_request][:to_city])
 					xml.tag!('ToState', options[:e_vs_request][:to_state])
 					xml.tag!('ToZip5', options[:e_vs_request][:to_zip_5])
+					xml.tag!('ToZip4', options[:e_vs_request][:to_zip_4])
 					xml.tag!('ToPhone', options[:e_vs_request][:to_phone])
 					xml.tag!('WeightInOunces', options[:e_vs_request][:weight_in_ounces])
 					xml.tag!('ServiceType', options[:e_vs_request][:service_type])
